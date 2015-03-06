@@ -28,9 +28,9 @@ PageStackWindow {
                     var bg = tbar.children[i]
                     bg.source = ""
                     Qt.createQmlObject("import QtQuick 1.1;Rectangle{anchors.fill:parent;color:\"%1\"}"
-                                       .arg(Style.S1_NORMAL), bg)
-                    Qt.createQmlObject("import QtQuick 1.1;Rectangle{width:parent.width;height:1;color:\"%1\"}"
                                        .arg(Style.S1_DEEP), bg)
+                    Qt.createQmlObject("import QtQuick 1.1;Rectangle{width:parent.width;height:1;color:\"%1\"}"
+                                       .arg(Style.S1_NORMAL), bg)
                 }
             }
         }
