@@ -10,7 +10,7 @@ Rectangle {
 
     implicitWidth: screen.width
     implicitHeight: visible ? privateStyle.tabBarHeightPortrait : 0
-    color: Style.S1_DEEP
+    color: Style.S1_NORMAL
     z: 10
 
     Rectangle {
@@ -38,8 +38,6 @@ Rectangle {
         }
         font.pixelSize: platformStyle.fontSizeLarge+2
         color: platformStyle.colorNormalLightInverted
-        style: Text.Raised
-        styleColor: platformStyle.colorNormalMidInverted
         maximumLineCount: 2
         elide: Text.ElideRight
         wrapMode: Text.WrapAnywhere
