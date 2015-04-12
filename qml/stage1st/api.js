@@ -1,8 +1,7 @@
 .pragma library
 
 var API_BASE_URL = "http://bbs.saraba1st.com/2b/api/mobile/index.php";
-var CategoryList = [];
-var ForumList = [];
+var UserName, UserId;
 
 var XHRequest = function(method, url) {
     this.method = method || "GET";
@@ -59,11 +58,10 @@ function getForumIndex(onSuccess, onFailure) {
     var req = new XHRequest;
     req.setQuery({module: "forumindex"});
     var s = function(resp) {
-        CategoryList = resp.Variables.catlist;
-        ForumList = resp.Variables.forumlist.sort(
+        var list = resp.Variables.forumlist.sort(
                     function(l,r){return r.todayposts-l.todayposts}
                     );
-        onSuccess();
+        onSuccess(list);
     };
     req.sendRequest(s, onFailure);
 }
@@ -84,8 +82,29 @@ function login(un, pw, onSuccess, onFailure) {
     req.setParams(params);
     var s = function(resp) {
         // success: messageval=location_login_succeed_mobile
+        UserName = resp.Variables.member_username;
+        UserId = resp.Variables.member_uid;
         onSuccess(resp.Message.messagestr,
                   resp.Message.messageval);
+    };
+    req.sendRequest(s, onFailure);
+}
+
+function getForumDisplay(option, onSuccess, onFailure) {
+    var req = new XHRequest;
+    var query = {
+        module: "forumdisplay",
+        fid: option.fid,
+        page: option.page,
+        tpp: 50
+    };
+    req.setQuery(query);
+    var s = function(resp) {
+        resp.Variables.forum.page = resp.Variables.page;
+        onSuccess(resp.Variables.forum,
+                  resp.Variables.forum_threadlist,
+                  resp.Variables.sublist,
+                  resp.Message ? resp.Message.messagestr : "");
     };
     req.sendRequest(s, onFailure);
 }

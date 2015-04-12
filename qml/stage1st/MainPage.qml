@@ -6,31 +6,6 @@ import "style.js" as Style
 Page {
     id: mainPage
 
-    function refresh() {
-        busyInd.visible = true
-        var s = function() {
-            busyInd.visible = false
-            buildCategory()
-            buildList()
-        }
-        var f = function(err) {
-            busyInd.visible = false
-            console.debug(err)
-        }
-        Api.getForumIndex(s, f)
-    }
-
-    function buildList() {
-        listModel.clear()
-        for (var i in Api.ForumList) {
-            listModel.append(Api.ForumList[i])
-        }
-    }
-
-    function buildCategory() {
-
-    }
-
     tools: ToolBarLayout {
         ToolButton {
             iconSource: "toolbar-back"
@@ -53,24 +28,43 @@ Page {
         ToolButton {
             iconSource: "toolbar-settings"
             platformInverted: true
-            onClicked: pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
         }
+    }
+
+    function refresh() {
+        busyInd.visible = true
+        var s = function(list) {
+            busyInd.visible = false
+            listModel.clear()
+            for (var i in list)
+                listModel.append(list[i])
+        }
+        var f = function(err) {
+            busyInd.visible = false
+            console.debug(err)
+        }
+        Api.getForumIndex(s, f)
+    }
+
+    Connections {
+        target: user
+        onUserChanged: refresh()
     }
 
     ViewHeader {
         id: viewHeader
-        title: "全部"
+        title: "stage1st"
         onClicked: forumList.positionViewAtBeginning()
 
-        Image {
+        ToolButton {
             anchors {
                 right: parent.right
-                rightMargin: platformStyle.paddingLarge
                 verticalCenter: parent.verticalCenter
             }
-            sourceSize.width: platformStyle.graphicSizeSmall
-            sourceSize.height: platformStyle.graphicSizeSmall
-            source: privateStyle.imagePath("qtg_graf_choice_list_indicator", true)
+            platformInverted: true
+            iconSource: "contacts_inverted.svg"
+            onClicked: pageStack.push(Qt.resolvedUrl(user.isValid ? "UserCenterPage.qml"
+                                                                  : "LoginPage.qml"))
         }
     }
 
@@ -96,6 +90,11 @@ Page {
                     color: Style.S1_BLUE
                 }
             }
+            onClicked: {
+                var prop = { forumName: name, forumId: fid }
+                var p = pageStack.push(Qt.resolvedUrl("ForumPage.qml"), prop)
+                p.getlist()
+            }
         }
     }
 
@@ -113,6 +112,4 @@ Page {
         visible: false
         running: visible
     }
-
-    Component.onCompleted: refresh()
 }

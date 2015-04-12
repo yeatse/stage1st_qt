@@ -6,6 +6,8 @@ import "style.js" as Style
 PageStackWindow {
     id: window
 
+    platformInverted: true
+
     initialPage: MainPage { id: mainPage }
 
     QtObject {
@@ -35,6 +37,10 @@ PageStackWindow {
                 }
             }
         }
+    }
+
+    S1User {
+        id: user
     }
 
     InfoBanner {

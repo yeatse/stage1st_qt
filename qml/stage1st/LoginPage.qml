@@ -11,8 +11,8 @@ Page {
             busyInd.visible = false
             infoBanner.showMessage(msg)
             if (ret == "location_login_succeed_mobile") {
-                // TODO: 登录成功
-                mainPage.refresh()
+                user.isValid = true
+                user.userChanged()
                 pageStack.pop()
             }
         }
@@ -34,6 +34,7 @@ Page {
     ViewHeader {
         id: viewHeader
         title: "登录"
+        enabled: false
     }
 
     Column {
