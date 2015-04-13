@@ -1,7 +1,7 @@
 .pragma library
 
 var API_BASE_URL = "http://bbs.saraba1st.com/2b/api/mobile/index.php";
-var UserName, UserId;
+var s1user;
 
 var XHRequest = function(method, url) {
     this.method = method || "GET";
@@ -32,7 +32,13 @@ XHRequest.prototype.sendRequest = function(onSuccess, onFailure) {
                         if (xhr.readyState == XMLHttpRequest.DONE) {
                             if (xhr.status == 200) {
                                 try {
-                                    onSuccess(JSON.parse(xhr.responseText));
+                                    var resp = JSON.parse(xhr.responseText);
+                                    if (typeof(resp.Variables) == "object") {
+                                        s1user.userName = resp.Variables.member_username||""
+                                        s1user.userId = resp.Variables.member_uid||0
+                                        s1user.auth = resp.Variables.auth||""
+                                    }
+                                    onSuccess(resp);
                                 }
                                 catch (e) {
                                     onFailure(e.toString());
@@ -82,8 +88,6 @@ function login(un, pw, onSuccess, onFailure) {
     req.setParams(params);
     var s = function(resp) {
         // success: messageval=location_login_succeed_mobile
-        UserName = resp.Variables.member_username;
-        UserId = resp.Variables.member_uid;
         onSuccess(resp.Message.messagestr,
                   resp.Message.messageval);
     };

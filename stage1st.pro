@@ -1,36 +1,45 @@
-# Add more folders to ship with the application, here
-folder_01.source = qml/stage1st
-folder_01.target = qml
-DEPLOYMENTFOLDERS = folder_01
+TEMPLATE = app
+TARGET = stage1st
 
-# Additional import path used to resolve QML modules in Creator's code model
-QML_IMPORT_PATH =
+VERSION = 1.0.0
+DEFINES += VER=\\\"$$VERSION\\\"
 
-symbian:TARGET.UID3 = 0xA006DFF6
+QT += network
 
-# Smart Installer package's UID
-# This UID is from the protected range and therefore the package will
-# fail to install if self-signed. By default qmake uses the unprotected
-# range value if unprotected UID is defined for the application and
-# 0x2002CCCF value if protected UID is given to the application
-#symbian:DEPLOYMENT.installer_header = 0x2002CCCF
+HEADERS += \
+    networkaccessmanagerfactory.h \
+    singletonbase.h \
+    qmlapi.h
 
-# Allow network access on Symbian
-symbian:TARGET.CAPABILITY += NetworkServices
+SOURCES += main.cpp \
+    networkaccessmanagerfactory.cpp \
+    qmlapi.cpp
 
-# If your application uses the Qt Mobility libraries, uncomment the following
-# lines and add the respective components to the MOBILITY variable.
-# CONFIG += mobility
-# MOBILITY +=
+folder_symbian3.source = qml/stage1st
+folder_symbian3.target = qml
 
-# Speed up launching on MeeGo/Harmattan when using applauncherd daemon
-# CONFIG += qdeclarative-boostable
+DEPLOYMENTFOLDERS = folder_symbian3
 
-# Add dependency to Symbian components
-CONFIG += qt-components
+symbian {
+    contains(QT_VERSION, 4.7.3) {
+        DEFINES += Q_OS_S60V5
+        INCLUDEPATH += $$[QT_INSTALL_PREFIX]/epoc32/include/middleware
+        INCLUDEPATH += $$[QT_INSTALL_PREFIX]/include/Qt
+        MMP_RULES += "DEBUGGABLE"
+    }
 
-# The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp
+    CONFIG += qt-components
+    TARGET.UID3 = 0xA006DFF6
+    TARGET.CAPABILITY += NetworkServices ReadUserData WriteUserData
+
+    vendorinfo = "%{\"Yeatse\"}" ":\"Yeatse\""
+    my_deployment.pkg_prerules += vendorinfo
+    DEPLOYMENT += my_deployment
+
+    # Symbian have a different syntax
+    DEFINES -= VER=\\\"$$VERSION\\\"
+    DEFINES += VER=\"$$VERSION\"
+}
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)

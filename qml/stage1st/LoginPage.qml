@@ -6,6 +6,7 @@ Page {
     id: loginPage
 
     function login() {
+        user.logout()
         busyInd.visible = true
         var s = function(msg, ret) {
             busyInd.visible = false

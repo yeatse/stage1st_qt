@@ -11,6 +11,14 @@ Page {
     property int forumId
     property int pageNumber: 1
     property bool hasNextPage: false
+    property bool requestLoad: true
+
+    onStatusChanged: {
+        if (status == PageStatus.Active && requestLoad) {
+            requestLoad = false
+            getlistTimer.restart()
+        }
+    }
 
     function getlist(option) {
         busyInd.visible = true
@@ -104,6 +112,7 @@ Page {
     ListView {
         id: listView
         anchors { fill: parent; topMargin: viewHeader.height }
+        cacheBuffer: 200
         pressDelay: 1000
         model: ListModel { id: listModel }
         delegate: ListItem {
@@ -131,7 +140,9 @@ Page {
                     Rectangle {
                         id: repRect
                         width: rep.width + 10
-                        height: rep.height + 3
+                        height: rep.height + 2
+                        radius: 2
+                        y: -1
                         color: "steelblue"
                         Text {
                             id: rep
@@ -192,9 +203,8 @@ Page {
                     text: name
                     onClicked: {
                         subForumMenu.close()
-                        timer.name = name
-                        timer.fid = fid
-                        timer.restart()
+                        switchForumTimer.prop = { forumName: name, forumId: fid }
+                        switchForumTimer.restart()
                     }
                 }
             }
@@ -202,15 +212,18 @@ Page {
     }
 
     Timer {
-        id: timer
-        property string name
-        property string fid
-        interval: 200
+        id: getlistTimer
+        interval: 100
         repeat: false
-        onTriggered: {
-            pageStack.replace(Qt.resolvedUrl("ForumPage.qml"),
-                              { forumName: name, forumId: fid }).getlist()
-        }
+        onTriggered: getlist()
+    }
+
+    Timer {
+        id: switchForumTimer
+        property variant prop
+        interval: 250
+        repeat: false
+        onTriggered: pageStack.replace(Qt.resolvedUrl("ForumPage.qml"), prop)
     }
 
     BusyIndicator {

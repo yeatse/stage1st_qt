@@ -2,6 +2,7 @@ import QtQuick 1.1
 import com.nokia.symbian 1.1
 import com.nokia.extras 1.1
 import "style.js" as Style
+import "api.js" as Api
 
 PageStackWindow {
     id: window
@@ -31,9 +32,9 @@ PageStackWindow {
                     var bg = tbar.children[i]
                     bg.source = ""
                     Qt.createQmlObject("import QtQuick 1.1;Rectangle{anchors.fill:parent;color:\"%1\"}"
-                                       .arg(Style.S1_NORMAL), bg)
-                    Qt.createQmlObject("import QtQuick 1.1;Rectangle{width:parent.width;height:1;color:\"%1\"}"
                                        .arg(Style.S1_DEEP), bg)
+                    Qt.createQmlObject("import QtQuick 1.1;Rectangle{width:parent.width;height:1;color:\"%1\"}"
+                                       .arg(Style.S1_NORMAL), bg)
                 }
             }
         }
@@ -52,5 +53,9 @@ PageStackWindow {
         }
     }
 
-    Component.onCompleted: internal.initializeStyle()
+    Component.onCompleted: {
+        internal.initializeStyle()
+        Api.s1user = user
+        mainPage.refresh()
+    }
 }

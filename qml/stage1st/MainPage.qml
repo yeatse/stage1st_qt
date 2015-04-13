@@ -61,17 +61,22 @@ Page {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
             }
+            enabled: !busyInd.visible
             platformInverted: true
             iconSource: "contacts_inverted.svg"
-            onClicked: pageStack.push(Qt.resolvedUrl(user.isValid ? "UserCenterPage.qml"
-                                                                  : "LoginPage.qml"))
+            onClicked: {
+                if (user.isValid)
+                    pageStack.push(Qt.resolvedUrl("UserCenterPage.qml"))
+                else
+                    pageStack.push(Qt.resolvedUrl("LoginPage.qml"))
+            }
         }
     }
 
     ListView {
         id: forumList
         anchors { fill: parent; topMargin: viewHeader.height }
-        pressDelay: 50
+        pressDelay: 1000
         model: ListModel { id: listModel }
         delegate: ListItem {
             platformInverted: true
@@ -91,11 +96,18 @@ Page {
                 }
             }
             onClicked: {
-                var prop = { forumName: name, forumId: fid }
-                var p = pageStack.push(Qt.resolvedUrl("ForumPage.qml"), prop)
-                p.getlist()
+                gotoForumTimer.prop = { forumName: name, forumId: fid }
+                gotoForumTimer.restart()
             }
         }
+    }
+
+    Timer {
+        id: gotoForumTimer
+        property variant prop: null
+        repeat: false
+        interval: 200
+        onTriggered: pageStack.push(Qt.resolvedUrl("ForumPage.qml"), prop)
     }
 
     ScrollDecorator {
