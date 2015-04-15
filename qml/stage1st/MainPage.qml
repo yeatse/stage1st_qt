@@ -76,10 +76,8 @@ Page {
     ListView {
         id: forumList
         anchors { fill: parent; topMargin: viewHeader.height }
-        pressDelay: 1000
         model: ListModel { id: listModel }
-        delegate: ListItem {
-            platformInverted: true
+        delegate: ListItemFrame {
             Row {
                 anchors.left: parent.paddingItem.left
                 anchors.verticalCenter: parent.verticalCenter
@@ -96,18 +94,10 @@ Page {
                 }
             }
             onClicked: {
-                gotoForumTimer.prop = { forumName: name, forumId: fid }
-                gotoForumTimer.restart()
+                var prop = { forumName: name, forumId: fid }
+                pageStack.push(Qt.resolvedUrl("ForumPage.qml"), prop)
             }
         }
-    }
-
-    Timer {
-        id: gotoForumTimer
-        property variant prop: null
-        repeat: false
-        interval: 200
-        onTriggered: pageStack.push(Qt.resolvedUrl("ForumPage.qml"), prop)
     }
 
     ScrollDecorator {

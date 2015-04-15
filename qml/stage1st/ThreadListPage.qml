@@ -178,12 +178,6 @@ Page {
         id: menu
         MenuLayout {
             MenuItem {
-                text: "子论坛"
-                platformSubItemIndicator: true
-                visible: sublistModel.count > 0
-                onClicked: subForumMenu.open()
-            }
-            MenuItem {
                 text: "用浏览器打开"
             }
             MenuItem {
@@ -214,14 +208,6 @@ Page {
         interval: 100
         repeat: false
         onTriggered: getlist()
-    }
-
-    Timer {
-        id: switchForumTimer
-        property variant prop
-        interval: 250
-        repeat: false
-        onTriggered: pageStack.replace(Qt.resolvedUrl("ForumPage.qml"), prop)
     }
 
     BusyIndicator {

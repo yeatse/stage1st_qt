@@ -2,6 +2,7 @@
 #define QMLAPI_H
 
 #include <QObject>
+#include <QVariant>
 
 class QmlApi : public QObject
 {
@@ -9,6 +10,7 @@ class QmlApi : public QObject
 public:
     explicit QmlApi(QObject *parent = 0);
     Q_INVOKABLE void clearCookies();
+    Q_INVOKABLE QVariantList parseHtml(const QString& html);
 };
 
 #endif // QMLAPI_H

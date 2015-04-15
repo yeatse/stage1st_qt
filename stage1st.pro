@@ -9,11 +9,13 @@ QT += network
 HEADERS += \
     networkaccessmanagerfactory.h \
     singletonbase.h \
-    qmlapi.h
+    qmlapi.h \
+    htmlparser.h
 
 SOURCES += main.cpp \
     networkaccessmanagerfactory.cpp \
-    qmlapi.cpp
+    qmlapi.cpp \
+    htmlparser.cpp
 
 folder_symbian3.source = qml/stage1st
 folder_symbian3.target = qml
