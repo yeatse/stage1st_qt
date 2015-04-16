@@ -112,3 +112,20 @@ function getForumDisplay(option, onSuccess, onFailure) {
     };
     req.sendRequest(s, onFailure);
 }
+
+function viewThread(option, onSuccess, onFailure) {
+    var req = new XHRequest;
+    var query = {
+        module: "viewthread",
+        tid: option.tid,
+        page: option.page,
+        ppp: 30
+    }
+    req.setQuery(query);
+    var s = function(resp) {
+        onSuccess(resp.Variables.thread,
+                  resp.Variables.postlist,
+                  resp.Message ? resp.Message.messagestr : "");
+    }
+    req.sendRequest(s, onFailure);
+}

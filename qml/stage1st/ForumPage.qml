@@ -103,7 +103,7 @@ Page {
                 rightMargin: platformStyle.paddingLarge
                 verticalCenter: parent.verticalCenter
             }
-            font.pixelSize: platformStyle.fontSizeMedium
+            font.pixelSize: platformStyle.fontSizeLarge + 2
             text: pageNumber
             color: Style.S1_BLUE
         }
@@ -116,6 +116,10 @@ Page {
         model: ListModel { id: listModel }
         delegate: ListItemFrame {
             implicitHeight: contentCol.height + platformStyle.paddingLarge*2
+            onClicked: {
+                var prop = { title: subject, threadId: tid }
+                pageStack.push(Qt.resolvedUrl("ThreadListPage.qml"), prop)
+            }
 
             Column {
                 id: contentCol

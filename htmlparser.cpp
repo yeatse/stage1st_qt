@@ -122,12 +122,12 @@ QVariantList HtmlParser::parseHtml(const QString &html)
 
 bool HtmlParser::isS1Emoticon(const QString &src)
 {
-    return false;
+    return src.startsWith("static/image/smiley");
 }
 
 QString HtmlParser::s1EmoticonToImageTag(const QString &src)
 {
-    return src;
+    return QString("<img src=\"http://bbs.saraba1st.com/2b/%1\"/>").arg(src);
 }
 
 QString HtmlParser::addAnchorTag(const QString &text, const QString &href)
