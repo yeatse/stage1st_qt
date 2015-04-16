@@ -13,11 +13,12 @@ public:
 private:
     HtmlParser();
 
+    QString fixHtml(const QString& html);
+
     bool isS1Emoticon(const QString& src);
     QString s1EmoticonToImageTag(const QString& src);
 
     QString addAnchorTag(const QString& text, const QString& href);
-    QString addItalicTag(const QString& text);
 };
 
 #endif // HTMLPARSER_H

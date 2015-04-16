@@ -3,7 +3,7 @@
 #include <QTextDocument>
 #include <QTextBlock>
 
-const int MaxRichTextLength = 500;
+const int MaxRichTextLength = 100;
 
 class BlockData
 {
@@ -12,6 +12,7 @@ public:
 
     int format;
     QString content;
+    bool italic;
 
     void append(BlockData* other);
     QVariantMap toMap() const;
@@ -34,6 +35,7 @@ QVariantMap BlockData::toMap() const
     QVariantMap map;
     map.insert("format", format);
     map.insert("content", content);
+    map.insert("italic", italic);
     return map;
 }
 
@@ -46,8 +48,7 @@ QVariantList HtmlParser::parseHtml(const QString &html)
     QList<BlockData*> list;
 
     QTextDocument doc;
-    doc.setHtml(QString(html).replace(QRegExp("<blockquote>([\\s\\S]*)</blockquote>"),
-                                      "<i>\\1</i>"));
+    doc.setHtml(fixHtml(html));
 
     for (QTextBlock block = doc.firstBlock(); block != doc.end(); block = block.next()) {
         QList<BlockData*> blockList;
@@ -74,22 +75,20 @@ QVariantList HtmlParser::parseHtml(const QString &html)
                     data->format = BlockData::RichText;
                     data->content = addAnchorTag(fragment.text(), format.anchorHref());
                 }
-                else if (format.fontItalic()) {
-                    data->format = BlockData::RichText;
-                    data->content = addItalicTag(fragment.text());
-                }
                 else {
                     data->format = BlockData::PlainText;
                     data->content = fragment.text();
                 }
             }
 
+            data->italic = format.fontItalic();
+
             if (blockList.isEmpty() || data->format == BlockData::Image) {
                 blockList.append(data);
             }
             else {
                 BlockData* lastData = blockList.last();
-                if (lastData->format == BlockData::Image) {
+                if (lastData->format == BlockData::Image || lastData->italic != data->italic) {
                     blockList.append(data);
                 }
                 else if (lastData->format == BlockData::RichText || data->format == BlockData::RichText) {
@@ -120,6 +119,13 @@ QVariantList HtmlParser::parseHtml(const QString &html)
     return result;
 }
 
+QString HtmlParser::fixHtml(const QString &html)
+{
+    return QString(html)
+            .replace(QRegExp("<blockquote>([\\s\\S]*)</blockquote>"), "<i>\\1</i>")
+            .replace("<imgwidth", "<img width");
+}
+
 bool HtmlParser::isS1Emoticon(const QString &src)
 {
     return src.startsWith("static/image/smiley");
@@ -133,9 +139,4 @@ QString HtmlParser::s1EmoticonToImageTag(const QString &src)
 QString HtmlParser::addAnchorTag(const QString &text, const QString &href)
 {
     return QString("<a href=\"%1\">%2</a>").arg(href, text);
-}
-
-QString HtmlParser::addItalicTag(const QString &text)
-{
-    return QString("<i>%1</i>").arg(text);
 }

@@ -5,6 +5,7 @@ Item {
     id: root
 
     property alias paddingItem: paddingItem
+    property bool effectEnabled: true
 
     signal clicked
 
@@ -14,7 +15,7 @@ Item {
     Loader {
         id: faderLoader
         anchors.fill: parent
-        sourceComponent: mouseArea.pressed ? faderComponent : undefined
+        sourceComponent: effectEnabled && mouseArea.pressed ? faderComponent : undefined
         Component {
             id: faderComponent
             Rectangle {

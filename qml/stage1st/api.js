@@ -129,3 +129,9 @@ function viewThread(option, onSuccess, onFailure) {
     }
     req.sendRequest(s, onFailure);
 }
+
+function getAvatarSource(uid) {
+    var str = String(1000000000 + Number(uid)).substring(1);
+    return "http://bbs.saraba1st.com/2b/uc_server/data/avatar/%1/%2/%3/%4_avatar_small.jpg"
+    .arg(str.substring(0,3)).arg(str.substring(3,5)).arg(str.substring(5,7)).arg(str.substring(7,9));
+}

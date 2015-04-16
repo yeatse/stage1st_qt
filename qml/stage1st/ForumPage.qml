@@ -112,7 +112,7 @@ Page {
     ListView {
         id: listView
         anchors { fill: parent; topMargin: viewHeader.height }
-        cacheBuffer: 200
+        cacheBuffer: 3000
         model: ListModel { id: listModel }
         delegate: ListItemFrame {
             implicitHeight: contentCol.height + platformStyle.paddingLarge*2
@@ -129,11 +129,11 @@ Page {
                 spacing: platformStyle.paddingLarge
 
                 ListItemText {
-                    platformInverted: true
                     width: parent.width
                     wrapMode: Text.Wrap
                     maximumLineCount: 2
                     text: subject
+                    color: Style.S1_BLUE
                 }
 
                 Item {
