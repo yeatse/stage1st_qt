@@ -2,6 +2,7 @@
 
 #include <QTextDocument>
 #include <QTextBlock>
+#include <QFile>
 
 const int MaxRichTextLength = 100;
 
@@ -133,7 +134,11 @@ bool HtmlParser::isS1Emoticon(const QString &src)
 
 QString HtmlParser::s1EmoticonToImageTag(const QString &src)
 {
-    return QString("<img src=\"http://bbs.saraba1st.com/2b/%1\"/>").arg(src);
+    QString file = QString(src).replace("static/image/smiley/", ":/emoticon/");
+    if (QFile::exists(file))
+        return QString("<img src=\"%1\"/>").arg(file);
+    else
+        return QString("<img src=\"http://bbs.saraba1st.com/2b/%1\"/>").arg(src);
 }
 
 QString HtmlParser::addAnchorTag(const QString &text, const QString &href)

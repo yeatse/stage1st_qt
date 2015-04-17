@@ -199,9 +199,11 @@ Page {
     ContextMenu {
         id: subForumMenu
         MenuLayout {
+            id: menuLayout
             Repeater {
                 model: ListModel { id: sublistModel }
                 MenuItem {
+                    width: menuLayout.width
                     text: name
                     onClicked: {
                         subForumMenu.close()

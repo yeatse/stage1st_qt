@@ -8,6 +8,9 @@
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
+#ifdef Q_OS_SYMBIAN
+    QApplication::setAttribute((Qt::ApplicationAttribute)11); //Qt::AA_CaptureMultimediaKeys
+#endif
     QScopedPointer<QApplication> app(createApplication(argc, argv));
 
     app->setApplicationName("stage1st");
