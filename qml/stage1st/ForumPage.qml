@@ -112,7 +112,7 @@ Page {
     ListView {
         id: listView
         anchors { fill: parent; topMargin: viewHeader.height }
-        cacheBuffer: 3000
+        cacheBuffer: 8000
         model: ListModel { id: listModel }
         delegate: ListItemFrame {
             implicitHeight: contentCol.height + platformStyle.paddingLarge*2
@@ -128,12 +128,14 @@ Page {
                 anchors.right: parent.paddingItem.right
                 spacing: platformStyle.paddingLarge
 
-                ListItemText {
+                Text {
                     width: parent.width
                     wrapMode: Text.Wrap
+                    elide: Text.ElideRight
                     maximumLineCount: 2
                     text: subject
                     color: Style.S1_BLUE
+                    font.pixelSize: platformStyle.fontSizeLarge
                 }
 
                 Item {
@@ -155,18 +157,20 @@ Page {
                             text: replies
                         }
                     }
-                    ListItemText {
+                    Text {
                         anchors.left: repRect.right
                         anchors.leftMargin: platformStyle.paddingSmall
-                        platformInverted: true
                         text: author
-                        role: "SubTitle"
+                        font.weight: Font.Light
+                        font.pixelSize: platformStyle.fontSizeSmall
+                        color: platformStyle.colorNormalMidInverted
                     }
-                    ListItemText {
+                    Text {
                         anchors.right: parent.right
-                        platformInverted: true
                         text: lastposter
-                        role: "SubTitle"
+                        font.weight: Font.Light
+                        font.pixelSize: platformStyle.fontSizeSmall
+                        color: platformStyle.colorNormalMidInverted
                     }
                 }
             }

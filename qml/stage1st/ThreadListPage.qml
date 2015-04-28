@@ -112,7 +112,8 @@ Page {
     ListView {
         id: listView
         anchors { fill: parent; topMargin: viewHeader.height }
-        cacheBuffer: 1000
+        focus: true
+        cacheBuffer: 300
         model: ListModel { id: listModel }
         delegate: ListItemFrame {
             effectEnabled: false
@@ -149,26 +150,33 @@ Page {
                         source: "photo.png"
                         visible: avatarImage.status != Image.Ready
                     }
-                    Column {
+                    Text {
                         anchors {
                             left: avatarImage.right
                             leftMargin: platformStyle.paddingMedium
-                            verticalCenter: parent.verticalCenter
+                            bottom: parent.verticalCenter
                         }
-                        ListItemText {
-                            platformInverted: true
-                            text: author
-                        }
-                        ListItemText {
-                            platformInverted: true
-                            role: "SubTitle"
-                            text: dateline
-                        }
+                        font.pixelSize: platformStyle.fontSizeLarge
+                        color: platformStyle.colorNormalLightInverted
+                        text: author
                     }
-                    ListItemText {
+                    Text {
+                        anchors {
+                            left: avatarImage.right
+                            leftMargin: platformStyle.paddingMedium
+                            top: parent.verticalCenter
+                            topMargin: 3
+                        }
+                        font.pixelSize: platformStyle.fontSizeSmall
+                        font.weight: Font.Light
+                        color: platformStyle.colorNormalMidInverted
+                        text: dateline
+                    }
+                    Text {
                         anchors.right: parent.right
-                        platformInverted: true
-                        role: "SubTitle"
+                        font.pixelSize: platformStyle.fontSizeSmall
+                        font.weight: Font.Light
+                        color: platformStyle.colorNormalMidInverted
                         text: "#"+number
                     }
                 }
@@ -229,6 +237,19 @@ Page {
             enabled: !busyInd.visible
             onClicked: getlist("next")
         }
+
+        function pageUp() {
+            contentY -= height
+            if (atYBeginning) positionViewAtBeginning()
+        }
+
+        function pageDown() {
+            contentY += height
+            if (atYEnd) positionViewAtEnd()
+        }
+
+        Keys.onVolumeUpPressed: pageUp()
+        Keys.onVolumeDownPressed: pageDown()
     }
 
     ScrollDecorator {
