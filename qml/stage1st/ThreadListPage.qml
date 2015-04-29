@@ -239,13 +239,17 @@ Page {
         }
 
         function pageUp() {
-            contentY -= height
-            if (atYBeginning) positionViewAtBeginning()
+            if (!atYBeginning) {
+                contentY -= height
+                if (atYBeginning) positionViewAtBeginning()
+            }
         }
 
         function pageDown() {
-            contentY += height
-            if (atYEnd) positionViewAtEnd()
+            if (!atYEnd) {
+                contentY += height
+                if (atYEnd) positionViewAtEnd()
+            }
         }
 
         Keys.onVolumeUpPressed: pageUp()

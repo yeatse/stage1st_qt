@@ -113,6 +113,7 @@ Page {
         id: listView
         anchors { fill: parent; topMargin: viewHeader.height }
         cacheBuffer: 8000
+        focus: true
         model: ListModel { id: listModel }
         delegate: ListItemFrame {
             implicitHeight: contentCol.height + platformStyle.paddingLarge*2
@@ -175,6 +176,23 @@ Page {
                 }
             }
         }
+
+        function pageUp() {
+            if (!atYBeginning) {
+                contentY -= height
+                if (atYBeginning) positionViewAtBeginning()
+            }
+        }
+
+        function pageDown() {
+            if (!atYEnd) {
+                contentY += height
+                if (atYEnd) positionViewAtEnd()
+            }
+        }
+
+        Keys.onVolumeUpPressed: pageUp()
+        Keys.onVolumeDownPressed: pageDown()
     }
 
     ScrollDecorator {
