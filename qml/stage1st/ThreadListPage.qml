@@ -12,13 +12,17 @@ Page {
 
     property int topPage: 1
     property int bottomPage: 1
+    property int currentPage: 1
     property int pageCount: 1
     property bool requestLoad: true
 
     onStatusChanged: {
-        if (status == PageStatus.Active && requestLoad) {
-            requestLoad = false
-            getlistTimer.restart()
+        if (status == PageStatus.Active) {
+            listView.focus = true
+            if (requestLoad) {
+                requestLoad = false
+                getlistTimer.restart()
+            }
         }
     }
 
@@ -35,7 +39,7 @@ Page {
         else if (option == "refresh")
             opt.page = 1
         else
-            opt.page = topPage
+            opt.page = currentPage
 
         var s = function(info, list, msg) {
             busyInd.visible = false
@@ -45,13 +49,13 @@ Page {
             pageCount = Math.ceil(info.replies / 30)
 
             if (option == "prev") {
-                topPage = opt.page
+                topPage = currentPage = opt.page
             }
             else if (option == "next") {
-                bottomPage = opt.page
+                bottomPage = currentPage = opt.page
             }
             else {
-                topPage = bottomPage = opt.page
+                topPage = bottomPage = currentPage = opt.page
                 listModel.clear()
             }
 
@@ -215,7 +219,7 @@ Page {
                                 }
                                 MouseArea {
                                     anchors.fill: parent
-                                    onClicked: Qt.openUrlExternally(content)
+                                    onClicked: pageStack.push(Qt.resolvedUrl("ImageViewPage.qml"), { imageUrl: content })
                                 }
                             }
                         }
@@ -232,23 +236,54 @@ Page {
         }
 
         footer: FooterItem {
-            visible: bottomPage < pageCount
-            text: "下一页"
-            enabled: !busyInd.visible
+            visible: listModel.count > 0
+            text: bottomPage < pageCount ? "下一页" : "下面没有了"
+            enabled: bottomPage < pageCount && !busyInd.visible
             onClicked: getlist("next")
         }
 
+        PropertyAnimation {
+            id: scrollAnimation
+            target: listView
+            property: "contentY"
+            easing.type: Easing.InOutSine
+        }
+
         function pageUp() {
-            if (!atYBeginning) {
-                contentY -= height
-                if (atYBeginning) positionViewAtBeginning()
+            if (atYBeginning) {
+                if (topPage > 1 && !busyInd.visible)
+                    getlist("prev")
+            }
+            else if (!scrollAnimation.running) {
+                scrollAnimation.from = contentY
+                scrollAnimation.to = contentY - height
+                scrollAnimation.start()
             }
         }
 
         function pageDown() {
-            if (!atYEnd) {
-                contentY += height
-                if (atYEnd) positionViewAtEnd()
+            if (atYEnd) {
+                if (bottomPage < pageCount && !busyInd.visible)
+                    getlist("next")
+            }
+            else if (!scrollAnimation.running) {
+                scrollAnimation.from = contentY
+                scrollAnimation.to = contentY + height
+                scrollAnimation.start()
+            }
+        }
+
+        onAtYBeginningChanged: {
+            if (atYBeginning && scrollAnimation.running) {
+                scrollAnimation.stop()
+                positionViewAtBeginning()
+            }
+        }
+
+        onAtYEndChanged: {
+            if (atYEnd && scrollAnimation.running) {
+                scrollAnimation.stop()
+                positionViewAtEnd()
             }
         }
 
@@ -269,10 +304,32 @@ Page {
             }
             MenuItem {
                 text: "跳页"
+                enabled: !busyInd.visible
+                onClicked: {
+                    pageJumper.currentPage = currentPage
+                    pageJumper.totalPage = pageCount
+                    pageJumper.open()
+                }
             }
             MenuItem {
                 text: "设置"
             }
+        }
+        onStatusChanged: {
+            if (status == DialogStatus.Closed)
+                listView.focus = true
+        }
+    }
+
+    PageJumper {
+        id: pageJumper
+        onAccepted: {
+            page.currentPage = currentPage
+            getlist("jump")
+        }
+        onStatusChanged: {
+            if (status == DialogStatus.Closed)
+                listView.focus = true
         }
     }
 

@@ -14,9 +14,12 @@ Page {
     property bool requestLoad: true
 
     onStatusChanged: {
-        if (status == PageStatus.Active && requestLoad) {
-            requestLoad = false
-            getlistTimer.restart()
+        if (status == PageStatus.Active) {
+            listView.focus = true
+            if (requestLoad) {
+                requestLoad = false
+                getlistTimer.restart()
+            }
         }
     }
 
@@ -113,7 +116,6 @@ Page {
         id: listView
         anchors { fill: parent; topMargin: viewHeader.height }
         cacheBuffer: 8000
-        focus: true
         model: ListModel { id: listModel }
         delegate: ListItemFrame {
             implicitHeight: contentCol.height + platformStyle.paddingLarge*2
@@ -177,17 +179,40 @@ Page {
             }
         }
 
+        PropertyAnimation {
+            id: scrollAnimation
+            target: listView
+            property: "contentY"
+            easing.type: Easing.InOutSine
+        }
+
         function pageUp() {
-            if (!atYBeginning) {
-                contentY -= height
-                if (atYBeginning) positionViewAtBeginning()
+            if (!atYBeginning && !scrollAnimation.running) {
+                scrollAnimation.from = contentY
+                scrollAnimation.to = contentY - height
+                scrollAnimation.start()
             }
         }
 
         function pageDown() {
-            if (!atYEnd) {
-                contentY += height
-                if (atYEnd) positionViewAtEnd()
+            if (!atYEnd && !scrollAnimation.running) {
+                scrollAnimation.from = contentY
+                scrollAnimation.to = contentY + height
+                scrollAnimation.start()
+            }
+        }
+
+        onAtYBeginningChanged: {
+            if (atYBeginning && scrollAnimation.running) {
+                scrollAnimation.stop()
+                positionViewAtBeginning()
+            }
+        }
+
+        onAtYEndChanged: {
+            if (atYEnd && scrollAnimation.running) {
+                scrollAnimation.stop()
+                positionViewAtEnd()
             }
         }
 
@@ -215,6 +240,10 @@ Page {
             MenuItem {
                 text: "设置"
             }
+        }
+        onStatusChanged: {
+            if (status == DialogStatus.Closed)
+                listView.focus = true
         }
     }
 

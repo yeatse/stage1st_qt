@@ -5,6 +5,7 @@
 #include <QFile>
 
 const int MaxRichTextLength = 100;
+const int MaxPlainTextLength = 1000;
 
 class BlockData
 {
@@ -92,18 +93,17 @@ QVariantList HtmlParser::parseHtml(const QString &html)
                 if (lastData->format == BlockData::Image || lastData->italic != data->italic) {
                     blockList.append(data);
                 }
-                else if (lastData->format == BlockData::RichText || data->format == BlockData::RichText) {
-                    if (lastData->content.length() + data->content.length() > MaxRichTextLength) {
+                else {
+                    const int threshold = lastData->format == BlockData::PlainText && data->format == BlockData::PlainText
+                            ? MaxPlainTextLength : MaxRichTextLength;
+
+                    if (lastData->content.length() + data->content.length() > threshold) {
                         blockList.append(data);
                     }
                     else {
                         lastData->append(data);
                         delete data;
                     }
-                }
-                else {
-                    lastData->append(data);
-                    delete data;
                 }
             }
         }
