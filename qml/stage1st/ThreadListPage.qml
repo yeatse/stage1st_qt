@@ -256,7 +256,7 @@ Page {
             }
             else if (!scrollAnimation.running) {
                 scrollAnimation.from = contentY
-                scrollAnimation.to = contentY - height
+                scrollAnimation.to = contentY - height + 20
                 scrollAnimation.start()
             }
         }
@@ -268,7 +268,7 @@ Page {
             }
             else if (!scrollAnimation.running) {
                 scrollAnimation.from = contentY
-                scrollAnimation.to = contentY + height
+                scrollAnimation.to = contentY + height - 20
                 scrollAnimation.start()
             }
         }

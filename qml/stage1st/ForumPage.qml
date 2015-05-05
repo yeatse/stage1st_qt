@@ -189,7 +189,7 @@ Page {
         function pageUp() {
             if (!atYBeginning && !scrollAnimation.running) {
                 scrollAnimation.from = contentY
-                scrollAnimation.to = contentY - height
+                scrollAnimation.to = contentY - height + 20
                 scrollAnimation.start()
             }
         }
@@ -197,7 +197,7 @@ Page {
         function pageDown() {
             if (!atYEnd && !scrollAnimation.running) {
                 scrollAnimation.from = contentY
-                scrollAnimation.to = contentY + height
+                scrollAnimation.to = contentY + height - 20
                 scrollAnimation.start()
             }
         }
