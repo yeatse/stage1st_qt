@@ -64,7 +64,6 @@ Page {
     tools: ToolBarLayout {
         ToolButton {
             iconSource: "toolbar-back"
-            platformInverted: true
             onClicked: pageStack.pop()
         }
 
@@ -72,27 +71,23 @@ Page {
             iconSource: "toolbar-previous"
             enabled: !busyInd.visible && pageNumber > 1
             onClicked: getlist("prev")
-            platformInverted: true
         }
 
         ToolButton {
             iconSource: "toolbar-refresh"
             enabled: !busyInd.visible
             onClicked: getlist()
-            platformInverted: true
         }
 
         ToolButton {
             iconSource: "toolbar-next"
             enabled: !busyInd.visible && hasNextPage
             onClicked: getlist("next")
-            platformInverted: true
         }
 
         ToolButton {
             iconSource: "toolbar-menu"
             onClicked: menu.open()
-            platformInverted: true
         }
     }
 
@@ -108,7 +103,7 @@ Page {
             }
             font.pixelSize: platformStyle.fontSizeLarge + 2
             text: pageNumber
-            color: Style.S1_BLUE
+            color: platformStyle.colorNormalLinkInverted
         }
     }
 
@@ -137,7 +132,7 @@ Page {
                     elide: Text.ElideRight
                     maximumLineCount: 2
                     text: subject
-                    color: Style.S1_BLUE
+                    color: platformStyle.colorNormalLightInverted
                     font.pixelSize: platformStyle.fontSizeLarge
                 }
 

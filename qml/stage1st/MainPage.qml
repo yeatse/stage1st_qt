@@ -9,25 +9,34 @@ Page {
     tools: ToolBarLayout {
         ToolButton {
             iconSource: "toolbar-back"
-            platformInverted: true
             onClicked: Qt.quit()
         }
 
         ToolButton {
             iconSource: "toolbar-refresh"
-            platformInverted: true
             enabled: !busyInd.visible
             onClicked: refresh()
         }
 
         ToolButton {
-            iconSource: "internet_inverted.svg"
+            iconSource: "internet.svg"
             platformInverted: true
         }
 
         ToolButton {
             iconSource: "toolbar-settings"
-            platformInverted: true
+        }
+    }
+
+    QtObject {
+        id: internal
+
+        function loadFromCache() {
+            var cache = qmlApi.loadForumList()
+
+        }
+
+        function loadFromNetwork() {
         }
     }
 
@@ -90,7 +99,7 @@ Page {
 
                 ListItemText {
                     text: todayposts == 0 ? "" : todayposts
-                    color: Style.S1_BLUE
+                    color: "steelblue"
                 }
             }
             onClicked: {

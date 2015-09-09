@@ -7,34 +7,20 @@ import "api.js" as Api
 PageStackWindow {
     id: window
 
-    platformInverted: true
-
     initialPage: MainPage { id: mainPage }
 
     QtObject {
         id: internal
-        function initializeStyle() {
+        function tintBackground() {
             if (window.hasOwnProperty("color")) {
-                window.color = Style.S1_LIGHT
+                window.color = Style.S1_BACKGROUND
             }
             else {
                 for (var i = window.children.length - 1; i>=0; i--) {
                     if (window.children[i].hasOwnProperty("color")) {
-                        window.children[i].color = Style.S1_LIGHT
+                        window.children[i].color = Style.S1_BACKGROUND
                         break
                     }
-                }
-            }
-
-            var tbar = window.pageStack.toolBar
-            for (var i = tbar.children.length - 1; i>=0; i--) {
-                if (tbar.children[i].hasOwnProperty("source")) {
-                    var bg = tbar.children[i]
-                    bg.source = ""
-                    Qt.createQmlObject("import QtQuick 1.1;Rectangle{anchors.fill:parent;color:\"%1\"}"
-                                       .arg(Style.S1_DEEP), bg)
-                    Qt.createQmlObject("import QtQuick 1.1;Rectangle{width:parent.width;height:1;color:\"%1\"}"
-                                       .arg(Style.S1_NORMAL), bg)
                 }
             }
         }
@@ -54,7 +40,7 @@ PageStackWindow {
     }
 
     Component.onCompleted: {
-        internal.initializeStyle()
+        internal.tintBackground()
         Api.s1user = user
         mainPage.refresh()
     }

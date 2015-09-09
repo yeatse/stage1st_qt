@@ -10,7 +10,7 @@ Rectangle {
 
     implicitWidth: screen.width
     implicitHeight: visible ? privateStyle.tabBarHeightPortrait : 0
-    color: Style.S1_DEEP
+    color: Style.S1_BANNER
     z: 10
 
     Rectangle {
